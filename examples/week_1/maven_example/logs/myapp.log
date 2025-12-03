@@ -1,0 +1,18 @@
+2025-12-03 10:34:20.383 [main] INFO  org.example.LoggingApp - === Application Started ===
+2025-12-03 10:34:20.385 [main] INFO  org.example.LoggingApp - Logging to file with rolling
+2025-12-03 10:34:20.385 [main] INFO  org.example.LoggingApp - Processing order: ORD0001
+2025-12-03 10:34:20.488 [main] DEBUG org.example.LoggingApp - Order ORD0001 processed successfully
+2025-12-03 10:34:20.488 [main] INFO  org.example.LoggingApp - Processing order: ORD0002
+2025-12-03 10:34:20.595 [main] DEBUG org.example.LoggingApp - Order ORD0002 processed successfully
+2025-12-03 10:34:42.560 [main] INFO  org.example.LoggingApp - === Application Started ===
+2025-12-03 10:34:42.563 [main] INFO  org.example.LoggingApp - Logging to file with rolling
+2025-12-03 10:34:42.563 [main] INFO  org.example.LoggingApp - Processing order: ORD0001
+2025-12-03 10:34:42.674 [main] DEBUG org.example.LoggingApp - Order ORD0001 processed successfully
+2025-12-03 10:34:42.674 [main] INFO  org.example.LoggingApp - Processing order: ORD0002
+2025-12-03 10:34:42.784 [main] DEBUG org.example.LoggingApp - Order ORD0002 processed successfully
+2025-12-03 10:34:53.153 [main] INFO  org.example.LoggingApp - === Application Started ===
+2025-12-03 10:34:53.157 [main] INFO  org.example.LoggingApp - Logging to file with rolling
+2025-12-03 10:34:53.157 [main] INFO  org.example.LoggingApp - Processing order: ORD0001
+2025-12-03 10:34:53.268 [main] DEBUG org.example.LoggingApp - Order ORD0001 processed successfully
+2025-12-03 10:34:53.268 [main] INFO  org.example.LoggingApp - Processing order: ORD0002
+2025-12-03 10:34:53.377 [main] DEBUG org.example.LoggingApp - Order ORD0002 processed successfully
