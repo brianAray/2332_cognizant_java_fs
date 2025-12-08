@@ -119,6 +119,6 @@ public class ObjectInspector {
         giveRaise.invoke(emp, 10.0);
 
         System.out.println("After raise: " + emp.getSalary());
-        
+
     }
 }
