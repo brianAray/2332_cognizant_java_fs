@@ -13,12 +13,12 @@ public interface DAOInterface<T> {
     public Integer create(T entity) throws SQLException;
     // READ BY ID
 
-    public Optional<DepartmentEntity> findById(Integer id) throws SQLException;
+    public Optional<T> findById(Integer id) throws SQLException;
 
     // READ ALL
     public List<T> findAll() throws SQLException;
     // UPDATE
     public T updateById(T entity) throws SQLException;
     // DELETE
-    public void deleteById(Integer id) throws SQLException;
+    public boolean deleteById(Integer id) throws SQLException;
 }

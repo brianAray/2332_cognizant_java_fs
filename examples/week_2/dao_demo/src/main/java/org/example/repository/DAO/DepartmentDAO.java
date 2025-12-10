@@ -74,7 +74,7 @@ public class DepartmentDAO implements DAOInterface<DepartmentEntity>{
     }
 
     @Override
-    public void deleteById(Integer id) throws SQLException{
-
+    public boolean deleteById(Integer id) throws SQLException{
+        return false;
     }
 }
