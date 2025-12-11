@@ -76,4 +76,23 @@ public class LocationDAO implements DAOInterface<LocationEntity> {
     public boolean deleteById(Integer id) throws SQLException {
         return false;
     }
+
+    public Optional<LocationEntity> findByLocationName(String locationName) throws SQLException{
+        String sql = "SELECT * FROM location WHERE location = ?";
+
+        try(PreparedStatement stmt = connection.prepareStatement(sql)){
+            stmt.setString(1, locationName);
+
+            try(ResultSet rs = stmt.executeQuery()){
+                if(rs.next()){
+                    LocationEntity location = new LocationEntity();
+                    location.setId(rs.getInt("id"));
+                    location.setLocation(rs.getString("location"));
+
+                    return Optional.of(location);
+                }
+            }
+        }
+        return Optional.empty();
+    }
 }

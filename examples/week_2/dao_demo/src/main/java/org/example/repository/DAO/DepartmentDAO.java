@@ -77,4 +77,23 @@ public class DepartmentDAO implements DAOInterface<DepartmentEntity>{
     public boolean deleteById(Integer id) throws SQLException{
         return false;
     }
+
+    public Optional<DepartmentEntity> findByDepartmentName(String departmentName) throws SQLException{
+        String sql = "SELECT * FROM department WHERE department = ?";
+
+        try(PreparedStatement stmt = connection.prepareStatement(sql)){
+            stmt.setString(1, departmentName);
+
+            try(ResultSet rs = stmt.executeQuery()){
+                if(rs.next()){
+                    DepartmentEntity departmentEntity = new DepartmentEntity();
+                    departmentEntity.setId(rs.getInt("id"));
+                    departmentEntity.setDepartment(rs.getString("department"));
+
+                    return Optional.of(departmentEntity);
+                }
+            }
+        }
+        return Optional.empty();
+    }
 }

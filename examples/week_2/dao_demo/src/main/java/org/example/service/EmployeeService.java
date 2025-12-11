@@ -8,6 +8,7 @@ import org.example.service.model.Employee;
 import org.example.service.model.Location;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,7 +46,14 @@ public class EmployeeService implements ServiceInterface<EmployeeEntity, Employe
 
     @Override
     public List<EmployeeEntity> getAllEntities() {
-        return null;
+
+        try{
+            List<EmployeeEntity> employeeEntities = employeeDAO.findAll();
+            return employeeEntities;
+        }catch (SQLException e){
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
@@ -98,5 +106,41 @@ public class EmployeeService implements ServiceInterface<EmployeeEntity, Employe
             return Optional.empty();
         }
 
+    }
+
+    public List<Employee> getAllModels() {
+        List<EmployeeEntity> employeeEntities = getAllEntities();
+        List<Employee> employees = new ArrayList<>();
+        for(EmployeeEntity employeeEntity: employeeEntities){
+            Optional<Employee> employee = convertEntityToModel(employeeEntity);
+            if(employee.isPresent()){
+                employees.add(employee.get());
+            }
+        }
+        return employees;
+    }
+
+    public List<Employee> getAllModelsByDepartment(Department department) {
+        List<EmployeeEntity> employeeEntities = getAllEntitiesByDepartmentId(department.getId());
+        List<Employee> employees = new ArrayList<>();
+        for(EmployeeEntity entity : employeeEntities){
+            Optional<Employee> employee = convertEntityToModel(entity);
+            if(employee.isPresent()){
+                employees.add(employee.get());
+            }
+        }
+        return employees;
+
+
+    }
+
+    private List<EmployeeEntity> getAllEntitiesByDepartmentId(Integer departmentId) {
+        try{
+            List<EmployeeEntity> employeeEntities = employeeDAO.findAllByDepartmentId(departmentId);
+            return employeeEntities;
+        }catch(SQLException e){
+            e.printStackTrace();
+            return null;
+        }
     }
 }

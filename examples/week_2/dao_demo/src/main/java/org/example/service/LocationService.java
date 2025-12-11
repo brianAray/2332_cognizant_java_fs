@@ -8,6 +8,7 @@ import org.example.service.model.Department;
 import org.example.service.model.Location;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,7 +45,14 @@ public class LocationService implements ServiceInterface<LocationEntity, Locatio
 
     @Override
     public List<LocationEntity> getAllEntities() {
-        return null;
+
+        try{
+            List<LocationEntity> locationEntities = locationDAO.findAll();
+            return locationEntities;
+        }catch(SQLException e){
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
@@ -75,14 +83,58 @@ public class LocationService implements ServiceInterface<LocationEntity, Locatio
                 if(location.isPresent()){
                     return location;
                 }else{
-                    throw new RuntimeException("DepartmentEntity conversion failed");
+                    throw new RuntimeException("LocationEntity conversion failed");
                 }
             }else{
-                throw new RuntimeException("DepartmentEntity not found");
+                throw new RuntimeException("LocationEntity not found");
             }
         }catch(RuntimeException e){
             e.printStackTrace();
             return Optional.empty();
         }
+    }
+
+    public Optional<Location> getModelByLocationName(String locationName) {
+        Optional<LocationEntity> locationEntity = getEntityByLocationName(locationName);
+        try{
+            if(locationEntity.isPresent()){
+                Optional<Location> location = convertEntityToModel(locationEntity.get());
+                if(location.isPresent()){
+                    return location;
+                }else{
+                    throw new RuntimeException("LocationEntity conversion failed");
+                }
+            }else{
+                throw new RuntimeException("LocationEntity not found");
+            }
+        }catch(RuntimeException e){
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
+    private Optional<LocationEntity> getEntityByLocationName(String locationName) {
+        try{
+            Optional<LocationEntity> locationEntity = locationDAO.findByLocationName(locationName);
+            if(locationEntity.isEmpty()){
+                throw new RuntimeException("Location not found");
+            }
+            return locationEntity;
+        }catch(SQLException | RuntimeException e){
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
+    public List<Location> getAllModels() {
+        List<LocationEntity> locationEntities = getAllEntities();
+        List<Location> locations = new ArrayList<>();
+        for(LocationEntity locationEntity : locationEntities){
+            Optional<Location> location = convertEntityToModel(locationEntity);
+            if(location.isPresent()){
+                locations.add(location.get());
+            }
+        }
+        return locations;
     }
 }

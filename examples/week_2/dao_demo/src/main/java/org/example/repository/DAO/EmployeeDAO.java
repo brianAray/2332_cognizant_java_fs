@@ -82,4 +82,27 @@ public class EmployeeDAO implements DAOInterface<EmployeeEntity> {
     public boolean deleteById(Integer id) throws SQLException {
         return false;
     }
+
+    public List<EmployeeEntity> findAllByDepartmentId(Integer departmentId) throws SQLException {
+        List<EmployeeEntity> employees = new ArrayList<>();
+
+        String sql = "SELECT * FROM employee WHERE dept_id = ?";
+        try(PreparedStatement stmt = connection.prepareStatement(sql)){
+            stmt.setInt(1, departmentId);
+
+            ResultSet rs = stmt.executeQuery();
+
+            while(rs.next()){
+
+                EmployeeEntity employee = new EmployeeEntity();
+                employee.setId(rs.getInt("id"));
+                employee.setFullName(rs.getString("full_name"));
+                employee.setDepartmentId(rs.getInt("dept_id"));
+                employee.setLocationId(rs.getInt("loc_id"));
+
+                employees.add(employee);
+            }
+        }
+        return employees;
+    }
 }
