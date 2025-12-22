@@ -1,0 +1,51 @@
+/* External CSS File */
+/* Type selector - selects all elements of this type */
+body{
+    font-family: 'Courier New', Courier, monospace;
+    color: #333
+}
+
+/* Universal selector */
+* {
+    background-color: red;
+}
+
+/* Grouping selector - selects multiple elements */
+h1, h2, h3 {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.paragraphs {
+    font-weight: bold;
+    color: white;
+}
+
+#header-3 {
+    font-size: large;
+    font-weight: bolder;
+    background-color: blueviolet;
+    border: 5px solid #999;
+    padding: 10px 5px 3px 20px;
+    margin: 30px;
+}
+
+/* Selects immediate sibling */
+h3 ~ p {
+    background-color: aqua;
+}
+
+input[type="text"]{
+    background-color: chartreuse;
+}
+
+/* form states */
+input:focus {
+    border-color: aqua;
+    background-color: blue;
+}
+
+@media (min-width:600px){
+    *{
+        background-color: green;
+    }
+}
