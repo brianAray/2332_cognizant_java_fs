@@ -7,11 +7,24 @@ import NavBar from './Components/NavBar/NavBar'
 import Hook from './Components/Hooks/Hook'
 import PokemonDisplay from './Components/Pokemon/PokemonDisplay'
 import PokemonManager from './Components/Pokemon/PokemonManager'
+import { useState } from 'react'
+import type { User } from './Components/useContext/User'
+import Dashboard from './Components/useContext/Dashboard'
+import { DashboardContext } from './Components/useContext/context'
 
 function App() {
 
+  const [user] = useState<User>({
+    name: 'Mike Jones',
+    isActive: true
+  });
+  
+
+
   return (
     <>
+      <DashboardContext.Provider value={user}>
+        <Dashboard/>
       {/* <GreetingComponent/>
       <EventsDemo/>
       <ListDemo/>
@@ -25,6 +38,7 @@ function App() {
         <Route path="/hooks" element={<Hook/>}></Route>
         <Route path="/poke" element={<PokemonManager/>}></Route>
       </Routes>
+      </DashboardContext.Provider>
     </>
   )
 }

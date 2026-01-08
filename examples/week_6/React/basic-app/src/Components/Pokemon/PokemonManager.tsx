@@ -1,12 +1,15 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import type { Pokemon } from './Pokemon';
 import axios from 'axios';
 import PokemonInput from './PokemonInput';
 import PokemonDisplay from './PokemonDisplay';
+import { DashboardContext } from '../useContext/context';
 
 function PokemonManager() {
 
     let [pokemon, setPokemon] = useState<Pokemon | undefined>(undefined)
+
+    const user = useContext(DashboardContext);
 
     useEffect(() => {
         getPokemon(1);
@@ -21,7 +24,7 @@ function PokemonManager() {
     
   return (
     <>
-
+        <h1>{user?.name}</h1>
         <PokemonInput getPokemon={getPokemon}/>
         <PokemonDisplay pokemon={pokemon}/>
     
