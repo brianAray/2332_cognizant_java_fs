@@ -1,0 +1,3 @@
+[submodule "examples/week_9/examples/week_9/jenkins_demo/jenkins-spring-demo"]
+	path = examples/week_9/examples/week_9/jenkins_demo/jenkins-spring-demo
+	url = https://github.com/brianAray/jenkins-spring-demo
