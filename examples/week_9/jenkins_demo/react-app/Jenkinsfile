@@ -1,0 +1,23 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_IMAGE = 'react-app-image'
+        APP_NAME = 'react-app-container'
+    }
+
+    stages {
+        stage('Docker Build'){
+            steps {
+                sh "docker build -t ${DOCKER_IMAGE} ."
+            }
+        }
+        stage('Deploy'){
+            steps {
+                sh "docker rm -f ${APP_NAME} || true"
+                sh "docker network create jenkins-demo-net || true"
+                sh "docker run -d -p 3000:3000 --network jenkins-demo-net --name ${APP_NAME} ${DOCKER_IMAGE}"
+            }
+        }
+    }
+}

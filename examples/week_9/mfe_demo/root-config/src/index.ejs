@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Root Config</title>
+
+    <!-- SystemJS - Required for Single-SPA module loading -->
+    <script src="https://cdn.jsdelivr.net/npm/systemjs@6.14.2/dist/system.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/systemjs@6.14.2/dist/extras/amd.min.js"></script>
+  
+
+  <script type="systemjs-importmap">
+    {
+      "imports": {
+        "single-spa": "https://cdn.jsdelivr.net/npm/single-spa@5.9.5/lib/system/single-spa.min.js",
+        "react": "https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.development.js",
+        "react-dom": "https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.development.js",
+        "react-dom/client": "https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.development.js",
+        "react/jsx-runtime": "https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.development.js",
+        "react/jsx-dev-runtime": "https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.development.js",
+        "single-spa-react": "https://cdn.jsdelivr.net/npm/single-spa-react@6.0.1/lib/system/single-spa-react.min.js",
+        "@revature/root-config": "/revature-root-config.js",
+        "@revature/angular-app": "http://localhost:4200/main.js",
+        "@revature/react-app": "http://localhost:8081/revature-react-app.js"
+        
+      }
+    }
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/import-map-overrides@5.1.1/dist/import-map-overrides.js"></script>
+
+
+</head>
+<body>
+  <noscript>
+    You need to enable JavaScript to run this app.
+  </noscript>
+  <script>
+    System.import("@revature/root-config");
+  </script>
+
+  <single-spa-router>
+    <application name="@revature/angular-app"></application>
+    <application name="@revature/react-app"></application>
+  </single-spa-router>
+
+  <import-map-overrides-full show-when-local-storage="devtools" dev-libs></import-map-overrides-full>
+</body>
+</html>
