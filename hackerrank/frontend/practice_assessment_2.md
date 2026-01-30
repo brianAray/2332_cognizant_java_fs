@@ -60,9 +60,8 @@ echo "Seeding complete!"
 
 1. **Search Integration:** Bind an input field to a "Search" button. When clicked, call your Spring Boot `GET /weather?cityName=London`.
 2. **Parsing Backend Data:** Your Spring Boot API returns a temperature integer. On your frontend, create a function that returns a CSS class:
-* If `temp < 15`, return `cold-theme` (blue background).
-* If `temp >= 15`, return `warm-theme` (orange background).
-
+  - If `temp < 15`, return `cold-theme` (blue background).
+  - If `temp >= 15`, return `warm-theme` (orange background).
 3. **Icon Logic:** Use a conditional check to show a sun icon or a snowflake icon based on the temperature value returned by your API.
 4. **Error Handling:** If the Spring Boot API returns a `404 Not Found` (meaning the city doesn't exist in the DB), display a "City Not Recorded" alert.
 

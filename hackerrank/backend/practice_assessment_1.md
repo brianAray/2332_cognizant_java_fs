@@ -22,24 +22,24 @@ Build a REST API to manage a collection of book records. Each book has a title, 
 
 ### API Requirements
 
-1. **POST `/books**`:
+1. **POST `/books`**:
 * Creates a new book.
 * Assigns a unique auto-incrementing ID starting from 1.
 * Response: `201 Created` with the object.
 
 
-2. **GET `/books**`:
+2. **GET `/books`**:
 * Returns all books ordered by ID.
 * Optional Query Params: `author` and `genre` (e.g., `/books?genre=Fiction&author=Orwell`).
 * Response: `200 OK`.
 
 
-3. **GET `/books/<id>**`:
+3. **GET `/books/<id>`**:
 * Returns a specific book.
 * Response: `200 OK` or `404 Not Found`.
 
 
-4. **DELETE/PUT/PATCH `/books/<id>**`:
+4. **DELETE/PUT/PATCH `/books/<id>`**:
 * Response: `405 Method Not Allowed`.
 
 
@@ -53,6 +53,5 @@ Build a REST API to manage a collection of book records. Each book has a title, 
 5. **Controller**: Map the endpoints and ensure the 405 status code is explicitly handled for prohibited methods.
 6. **Setup**: Configure `application.properties` for an in-memory H2 database.
 7. **DTO Pattern**: Use a Data Transfer Object (DTO) for the request body and map it to your Entity.
-8. **Filtering**: Implement a service method that checks if the relevant field is present; if so, filter the list before returning.
-9. **Error Handling**: Create a Global Exception Handler or use `ResponseEntity` in the controller to manage the 405 and 404 responses.
-10. **Validation**: Ensure that there is relevant validation handling to prevent values from being ones that are not following the business logic.
+8. **Error Handling**: Create a Global Exception Handler or use `ResponseEntity` in the controller to manage the 405 and 404 responses.
+9. **Validation**: Ensure that there is relevant validation handling to prevent values from being ones that are not following the business logic.
