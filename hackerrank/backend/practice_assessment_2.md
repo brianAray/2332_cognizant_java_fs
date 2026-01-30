@@ -12,6 +12,7 @@ A weather station needs an API to record and retrieve temperature data points.
 {
   "id": 1,
   "cityName": "London",
+  "region": "Europe",
   "latitude": 51.5074,
   "longitude": -0.1278,
   "temperature": 15.5,
@@ -30,6 +31,7 @@ A weather station needs an API to record and retrieve temperature data points.
 2. **GET `/weather`**:
 * Returns all records.
 * Optional Query Params: `cityName`.
+* Optional Query Params: `region`.
 * Response: `200 OK`.
 
 
@@ -48,7 +50,7 @@ A weather station needs an API to record and retrieve temperature data points.
 1. **Setup**: Initialize a Spring Boot project with Web, JPA, and H2 dependencies.
 2. **Model**: Create the entity with the fields specified above.
 3. **Repository**: Create a repository extending `JpaRepository`.
-4. **Service**: Implement the business logic
+4. **Service**: Implement the business logic. The search by city name or region should not care about case.
 5. **Controller**: Map the endpoints and ensure the 405 status code is explicitly handled for prohibited methods.
 6. **Setup**: Configure `application.properties` for an in-memory H2 database.
 7. **DTO Pattern**: Use a Data Transfer Object (DTO) for the request body and map it to your Entity.

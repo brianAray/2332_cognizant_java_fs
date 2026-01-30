@@ -59,12 +59,12 @@ echo "Workout seeding complete!"
 
 ### Requirement Steps
 
-1. **The Dynamic Form:** - Create a `WorkoutFormComponent` with inputs for `exerciseType` (dropdown), `durationMinutes` (number), `caloriesBurned` (number), and `userId` (number).
+1. **The Dynamic Form:** - Create a `WorkoutFormComponent` with inputs for `exerciseType` (dropdown), `durationMinutes` (number), `caloriesBurned` (number). The `userId` (number) is required to be filled through a state variable.
   - Ensure all fields are cleared after a successful submission.
-2. **Conditional Field Logic:** - Add a checkbox labeled **"High Intensity Session"**.
-  - Use conditional logic so that an additional input field for `peakHeartRate` appears **only** when this checkbox is checked.
+2. **Conditional Field Logic:** - Add a conditional label **"High Intensity"** and styling.
+  - Use conditional logic so that it flags an exercise as **"High Intensity"**: `caloriesBurned` >= 200 && `durationMinutes` <= 10;
 3. **Data Submission:** - On clicking "Save", the component should send a `POST` request to the `/workouts` endpoint.
-  - Handle the response: display a success message if the code is `201 Created`.
+  - Handle the response: display a success message if the code is `201 Created` and an unsuccessful message if it is not.
 4. **Local State Update:** - In your `WorkoutListComponent`, view a list of workouts from the backend.
   - **Optimization:** When a new workout is added via the form, instead of refreshing the entire page, push the new object returned by the API directly into the displayed array.
 5. **Row Deletion:** - Each row in your workout table must have a **"Delete"** button.
