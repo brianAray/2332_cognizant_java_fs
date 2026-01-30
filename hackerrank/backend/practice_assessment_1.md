@@ -4,7 +4,7 @@
 
 ### Problem Statement
 
-Build a REST API to manage a collection of book records. Each book has a title, author, genre, and publication year.
+Build a REST API to manage a collection of book records. Each book has a title, author, genre, pages, and publication year.
 
 **Example Book JSON:**
 
