@@ -64,7 +64,8 @@ echo "Seeding complete!"
     - A `SidebarComponent` for filters
     - A `BookListComponent` for results
     - A `BookSubmissionComponent` to create new books. 
-2. **Filter Communication:** * **Genre Filter:** Clicking a genre should trigger an API call: `GET /books?genre=Fiction`.
-* **Author Filter:** Implement a "toggle" logic. Clicking the same author twice should clear the filter and call `GET /books`.
+2. **Filter Communication:**
+  - **Genre Filter:** Clicking a genre should trigger an API call: `GET /books?genre=Fiction`.
+  - **Author Filter:** Implement a "toggle" logic. Clicking the same author twice should clear the filter and call `GET /books`.
 3. **Combined State:** If both an Author and a Genre are selected, the Angular service must construct the combined URL: `/books?genre=Fiction&author=Orwell`.
 4. **Empty States:** If the Spring Boot API returns an empty list, display a message: "No books found matching these filters."

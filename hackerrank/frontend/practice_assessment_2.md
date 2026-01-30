@@ -21,13 +21,13 @@ echo "Starting weather data seeding to $API_URL..."
 
 # Array of city data: Name|Lat|Long|Temp
 cities=(
-  "London|51.5074|-0.1278|15.5"
+  "London|51.5074|-0.1278|12.5"
   "New York|40.7128|-74.0060|22.3"
-  "Tokyo|35.6895|139.6917|18.2"
+  "Tokyo|35.6895|139.6917|10.2"
   "Sydney|-33.8688|151.2093|25.4"
   "Dallas|32.7767|-96.7970|31.0"
   "Oakland|37.8044|-122.2712|19.5"
-  "Paris|48.8566|2.3522|14.0"
+  "Paris|48.8566|2.3522|9.0"
   "Dubai|25.2048|55.2708|38.0"
 )
 
@@ -54,7 +54,7 @@ echo "Seeding complete!"
 1. **Start your backend** (Ensure the `/weather` endpoint is ready).
 2. **Run** `chmod +x seed_weather.sh` in your terminal to make the script executable.
 3. **Run** `./seed_weather.sh` in your terminal.
-4. **Verify** via the browser or Postman (`GET http://localhost:8080/books`).
+4. **Verify** via the browser or Postman (`GET http://localhost:8080/weather`).
 
 ### Requirement Steps
 
