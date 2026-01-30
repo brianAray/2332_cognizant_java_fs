@@ -6,51 +6,66 @@
 
 Design an API for a fitness app that logs exercises.
 
-**Example Workout JSON:**
+**Example Session JSON:**
 
 ```json
 {
   "id": 1,
   "userId": 505,
-  "exerciseType": "Running",
-  "durationMinutes": 45,
-  "caloriesBurned": 400,
+  "sessionType": "Cardio",
+  "workouts": [
+    {
+      "exerciseType": "Running",
+      "durationMinutes": 45,
+      "caloriesBurned": 400
+    },
+    {
+      "exerciseType": "Elliptical",
+      "durationMinutes": 45,
+      "caloriesBurned": 300
+    }
+  ],
   "date": "2026-01-28"
 }
 
 ```
 
+
 ### API Requirements
 
-1. **POST `/workouts`**:
+1. **POST `/{userId}/workouts`**:
 * Creates a new workout log.
 * Response: `201 Created`.
 
-
-2. **GET `/workouts`**:
-* Returns all logs.
-* Optional Query Params: `userId` and `exerciseType`.
+2. **GET `/{userId}/workouts`**:
+* Returns all logs for a user.
+* Optional Query Params: `sessionType`.
 * Response: `200 OK`.
 
-
-3. **GET `/workouts/<id>`**:
+3. **GET `/{userId}/workouts/{id}`**:
 * Returns a workout by ID.
 * Response: `200 OK` or `404 Not Found`.
 
+4. **PUT/PATCH `/{userId}/workouts/{id}`**
+* Updates a session
+* Response: `200 OK` or `404 Not Found`
 
-4. **DELETE/PUT/PATCH `/workouts/<id>`**:
-* Response: `405 Method Not Allowed`.
-
+5. **DELETE `/{userId}/workouts/{id}`**
+* Deletes a session
+* Response: `200 OK` or `404 Not Found`
 
 
 ### Implementation Steps
 
-1. **Setup**: Initialize a Spring Boot project with Web, JPA, and H2 dependencies.
-2. **Model**: Create the entity with the fields specified above.
-3. **Repository**: Create a repository extending `JpaRepository`.
-4. **Service**: Implement the business logic
-5. **Controller**: Map the endpoints and ensure the 405 status code is explicitly handled for prohibited methods.
-6. **Setup**: Configure `application.properties` for an in-memory H2 database.
-7. **DTO Pattern**: Use a Data Transfer Object (DTO) for the request body and map it to your Entity.
-8. **Error Handling**: Create a Global Exception Handler or use `ResponseEntity` in the controller to manage the 405 and 404 responses.
-9. **Validation**: Ensure that there is relevant validation handling to prevent values from being ones that are not following the business logic.
+1. **Setup**: Set up a Spring Boot project including Spring Web, Spring Data JPA, and a database driver (like H2 or PostgreSQL).
+2. **Model**: 
+  - Create a `WorkoutSession` entity.
+  - Create a `WorkoutItem` (or `Exercise`) entity to represent the nested list.
+  - Establish a One-to-Many relationship between the Session and the Workout items, ensuring `CascadeType.ALL` is used for persistence.
+3. **Repository**:
+  - Define a WorkoutRepository that extends JpaRepository.
+  - Add custom query methods to support filtering by userId, sessionType, and date ranges.
+4. **DTO**: Create a WorkoutSessionRequestDTO and a WorkoutItemDTO to decouple the API contract from the database schema.
+5. **Service**: Implement business logic
+6. **Controller**: implement the endpoints
+7. **Database**: Configure `application.properties` to set up the data source and ensure the schema is generated automatically for testing.
