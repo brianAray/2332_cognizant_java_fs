@@ -23,24 +23,24 @@ A warehouse logistics team needs an API to track real-time stock levels transmit
 
 ### API Requirements
 
-1. **POST `/inventory**`:
+1. **POST `/inventory`**:
 * Creates a new inventory record.
 * Response: `201 Created`.
 
 
-2. **GET `/inventory**`:
+2. **GET `/inventory`**:
 * Returns all inventory records.
 * Optional Query Params: `productName`.
 * Optional Query Params: `category`.
 * Response: `200 OK`.
 
 
-3. **GET `/inventory/<id>**`:
+3. **GET `/inventory/<id>`**:
 * Returns a specific record by ID.
 * Response: `200 OK` or `404 Not Found`.
 
 
-4. **DELETE/PUT/PATCH `/inventory/<id>**`:
+4. **DELETE/PUT/PATCH `/inventory/<id>`**:
 * Response: `405 Method Not Allowed`.
 
 

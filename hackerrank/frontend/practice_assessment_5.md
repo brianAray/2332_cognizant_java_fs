@@ -29,7 +29,7 @@ post_session() {
   curl -s -X POST "$BASE_URL/$userId/workouts" \
     -H "Content-Type: application/json" \
     -d "$json_payload"
-  echo -e "\n¿? Done.\n"
+  echo -e "\nDone.\n"
 }
 
 # --- USER 505 ---

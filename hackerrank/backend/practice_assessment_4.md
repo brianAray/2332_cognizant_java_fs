@@ -23,24 +23,24 @@ A municipal power company needs an API to track electricity usage from smart met
 
 ### API Requirements
 
-1. **POST `/meters**`:
+1. **POST `/meters`**:
 * Records a new meter reading.
 * Response: `201 Created`.
 
 
-2. **GET `/meters**`:
+2. **GET `/meters`**:
 * Returns all readings.
 * Optional Query Params: `sectorName` (Case-insensitive).
 * Optional Query Params: `status` (e.g., "Active" or "Maintenance").
 * Response: `200 OK`.
 
 
-3. **GET `/meters/<id>**`:
+3. **GET `/meters/<id>`**:
 * Returns a specific reading.
 * Response: `200 OK` or `404 Not Found`.
 
 
-4. **DELETE/PUT/PATCH `/meters/<id>**`:
+4. **DELETE/PUT/PATCH `/meters/<id>`**:
 * **Response: `405 Method Not Allowed`.**
 
 
@@ -64,5 +64,5 @@ A municipal power company needs an API to track electricity usage from smart met
 6. **Data Validation**:
 * `usageKwh` cannot be negative.
 * `voltage` must be between 110 and 480.
-* `meterId` must follow the structure `MTR-****`
+* `meterId` must follow the structure `MTR-**`**
 7. **DTOs**: Implement a `ReadingRequestDTO` to separate the API contract from the Database Schema.
