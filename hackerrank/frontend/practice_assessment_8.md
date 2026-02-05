@@ -26,8 +26,8 @@ post_room() {
   echo -e "\nDone."
 }
 
-# --- USER 88 (The Power User) ---
-post_room 88 "{
+# --- USER 77 ---
+post_room 77 "{
   \"roomName\": \"Home Theater\",
   \"lastUpdated\": \"$DATE_NOW\",
   \"devices\": [
@@ -37,7 +37,7 @@ post_room 88 "{
   ]
 }"
 
-post_room 88 "{
+post_room 77 "{
   \"roomName\": \"Garage\",
   \"lastUpdated\": \"$DATE_NOW\",
   \"devices\": [
@@ -46,7 +46,7 @@ post_room 88 "{
   ]
 }"
 
-# --- USER 99 (The Apartment Dweller) ---
+# --- USER 99 ---
 post_room 99 "{
   \"roomName\": \"Studio Main\",
   \"lastUpdated\": \"$DATE_NOW\",
@@ -57,7 +57,7 @@ post_room 99 "{
   ]
 }"
 
-# --- USER 101 (The Security Focused) ---
+# --- USER 101 ---
 post_room 101 "{
   \"roomName\": \"Exterior\",
   \"lastUpdated\": \"$DATE_NOW\",
@@ -68,7 +68,7 @@ post_room 101 "{
   ]
 }"
 
-# --- USER 202 (The Eco-Conscious) ---
+# --- USER 202 ---
 post_room 202 "{
   \"roomName\": \"Greenhouse\",
   \"lastUpdated\": \"$DATE_NOW\",
@@ -90,6 +90,12 @@ post_room 202 "{
 echo "Expanded seeding complete! Total Users: 4 | Total Rooms: 6"
 
 ```
+
+This will create 4 users:
+- 77
+- 99
+- 101
+- 202
 
 1. **Start Backend**: Ensure your Spring Boot app is running on port 8080.
 2. **Make Executable**: `chmod +x seed_smart_home.sh`.
