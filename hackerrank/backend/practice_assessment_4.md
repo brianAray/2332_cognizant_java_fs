@@ -21,6 +21,10 @@ A municipal power company needs an API to track electricity usage from smart met
 
 ```
 
+### Available Status
+* `Active`
+* `Maintenance`
+
 ### API Requirements
 
 1. **POST `/meters`**:
@@ -64,5 +68,6 @@ A municipal power company needs an API to track electricity usage from smart met
 6. **Data Validation**:
 * `usageKwh` cannot be negative.
 * `voltage` must be between 110 and 480.
-* `meterId` must follow the structure `MTR-**`**
+* `meterId` must follow the structure `MTR-**`
+* `status` must only allow `Active` or `Maintenance`
 7. **DTOs**: Implement a `ReadingRequestDTO` to separate the API contract from the Database Schema.

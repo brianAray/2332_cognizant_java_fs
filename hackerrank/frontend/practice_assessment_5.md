@@ -1,111 +1,75 @@
-## Assessment 5: The Fitness Activity Logger
+## Assessment 5: The Fleet Command Center
 
-**Backend Base:** The Fitness Tracker API (POST/GET/PUT/PATCH/DELETE).
-**Frontend Goal:** Build a dynamic dashboard to log workouts and manage a real-time activity list.
+**Backend Base:** The Micro-Mobility Fleet Manager.
+**Frontend Goal:** A high-pressure dashboard for fleet operators to identify "at-risk" bikes.
 
-### Pre Steps
+### Pre-Steps
 
-Before building the frontend, populate your backend database with initial data to ensure your list components have content to render.
+Use the script below to seed the database with bikes in various states of health.
 
-Create a bash script to execute this:
-
-`seed_workouts.sh`
+`seed_fleet.sh`
 
 ```bash
 #!/bin/bash
 
-BASE_URL="http://localhost:8080"
-DATE_TODAY=$(date +%Y-%m-%d)
-DATE_YESTERDAY=$(date -d "yesterday" +%Y-%m-%d 2>/dev/null || date -v-1d +%Y-%m-%d)
+API_URL="http://localhost:8080/fleet"
 
-echo "Starting workout data seeding to $BASE_URL..."
+echo "Deploying Fleet..."
 
-# Helper function to post a session
-post_session() {
-  local userId=$1
-  local json_payload=$2
-  
-  echo "Posting session for User $userId..."
-  curl -s -X POST "$BASE_URL/$userId/workouts" \
-    -H "Content-Type: application/json" \
-    -d "$json_payload"
-  echo -e "\nDone.\n"
-}
+# Data: ID|Model|Battery|Status|Lat|Long
+bikes=(
+  "BIKE-001|Cruiser-V2|95|AVAILABLE|34.05|-118.24"
+  "BIKE-002|Cruiser-V2|8|OUT_OF_ORDER|34.06|-118.25"
+  "BIKE-003|Speedster|45|RENTED|34.04|-118.26"
+  "BIKE-004|Speedster|12|AVAILABLE|34.07|-118.23"
+  "BIKE-005|Cruiser-V1|60|MAINTENANCE|34.08|-118.22"
+  "BIKE-006|Cruiser-V2|5|MAINTENANCE|34.09|-118.21"
+)
 
-# --- USER 505 ---
-post_session 505 "{
-  \"sessionType\": \"Cardio\",
-  \"date\": \"$DATE_TODAY\",
-  \"workouts\": [
-    { \"exerciseType\": \"Running\", \"durationMinutes\": 45, \"caloriesBurned\": 400 },
-    { \"exerciseType\": \"Elliptical\", \"durationMinutes\": 15, \"caloriesBurned\": 120 }
-  ]
-}"
+for b in "${bikes[@]}"; do
+  IFS="|" read -r id model bat stat lat long <<< "$b"
 
-# --- USER 102 ---
-post_session 102 "{
-  \"sessionType\": \"Swimming\",
-  \"date\": \"$DATE_YESTERDAY\",
-  \"workouts\": [{ \"exerciseType\": \"Laps\", \"durationMinutes\": 40, \"caloriesBurned\": 500 }]
-}"
-
-post_session 102 "{
-  \"sessionType\": \"Strength\",
-  \"date\": \"$DATE_TODAY\",
-  \"workouts\": [{ \"exerciseType\": \"Weightlifting\", \"durationMinutes\": 60, \"caloriesBurned\": 300 }]
-}"
-
-# --- USER 204 ---
-post_session 204 "{
-  \"sessionType\": \"Flexibility\",
-  \"date\": \"$DATE_TODAY\",
-  \"workouts\": [{ \"exerciseType\": \"Yoga\", \"durationMinutes\": 50, \"caloriesBurned\": 180 }]
-}"
-
-# --- USER 303 ---
-post_session 303 "{
-  \"sessionType\": \"Recovery\",
-  \"date\": \"$DATE_TODAY\",
-  \"workouts\": [{ \"exerciseType\": \"Walking\", \"durationMinutes\": 30, \"caloriesBurned\": 110 }]
-}"
-
-echo "Seeding complete!"
-
+  curl --location "$API_URL" \
+    --header 'Content-Type: application/json' \
+    --data "{
+        \"id\": \"$id\",
+        \"modelType\": \"$model\",
+        \"batteryLevel\": $bat,
+        \"status\": \"$stat\",
+        \"latitude\": $lat,
+        \"longitude\": $long
+    }"
+  echo -e "\nDeployed $id"
+done
 
 ```
 
-This will generate 4 users with their own workouts:
-- User Id:
-  - 505
-  - 102
-  - 204
-  - 303
-
-1. **Start your Spring Boot backend** (Ensure the `/workouts` endpoint is active).
-2. **Run** `chmod +x seed_workouts.sh` in your terminal to make the script executable.
-3. **Run** `./seed_workouts.sh` in your terminal.
-4. **Verify** via the browser or Postman (`GET http://localhost:8080/workouts`).
+1. **Start your backend.**
+2. **Execute:** `chmod +x seed_fleet.sh && ./seed_fleet.sh`.
+3. **Verify:** Check `GET http://localhost:8080/fleet`.
 
 ### Requirement Steps
 
-1. **Component Architecture:** 
-    - A `LoginComponent` to enter in the userId and store it as a state variable to be by other components
-    - A `SessionGalleryComponent` to view all the sessions for a user
-    - A `WorkoutListComponent` to view the workouts associated with a session
-    - A `SessionFormComponent` to create a new session for the user or edit a session
-    - A `WorkoutFormComponent` to create a new or update an existing session
-2. **Dynamic Form:**
-  - The `WorkoutFormComponent` should have inputs for `exerciseType` (dropdown or enter in custom type), `durationMinutes` (number), `caloriesBurned` (number). The `userId` (number) is required to be filled through a state variable.
-  - Each workout will be added to the session
-  - Ensure all fields are cleared after a successful submission.
-3. **Conditional Field Logic:** 
-  - Add a conditional label **"High Intensity"** and styling.
-  - Use conditional logic so that it flags an exercise as **"High Intensity"**: `caloriesBurned` >= 200 && `durationMinutes` <= 10
-4. **Data Submission:** 
-  - On clicking "Save", the component should send a `POST` request to the `/workouts` endpoint with the correct `userId`
-  - Handle the response: display a success message if the code is `201 Created` and an unsuccessful message if it is not.
-5. **Local State Update:** - In your `SessionComponent`, view a list of sessions from the backend
-  - When the session is clicked, it will expand the sessions workouts so that they are displayed
-  - Each session will have an edit option that will let you update the workouts individually or remove them from the session
-  - Each session can be deleted as well
-  - Clicking a save button will trigger the request to the backend to handle the local state update
+1. **The "Critical" Filter**: Create a "Show At-Risk Only" toggle. When active, it must filter the list locally (or via the `needsService` API) to show bikes requiring immediate attention.
+2. **Battery Progress Bar**: Instead of a number, display a visual progress bar for each bike.
+* **Green:** 50-100%
+* **Yellow:** 20-49%
+* **Red:** < 20%
+
+
+3. **State Management Actions**:
+* Each bike card should have an "Update Status" dropdown.
+* Clicking this calls the `PATCH` endpoint.
+* **UI:** If the backend returns a `403` (due to the low battery logic), the frontend must catch the error and display a modal/toast: "Operation Blocked: Bring bike to charging hub first."
+
+
+4. **Calculated Range**: Create a computed property on the frontend: **Estimated Range**.
+* Formula: `(battery % x 1.2 km)`.
+* Display this prominently on the `FullDetail` view.
+
+
+5. **Status Badges**: Use dynamic CSS classes to style statuses:
+* `AVAILABLE`: Green pill.
+* `RENTED`: Blue pill.
+* `MAINTENANCE`: Orange pill.
+* `OUT_OF_ORDER`: Red/Black pill.

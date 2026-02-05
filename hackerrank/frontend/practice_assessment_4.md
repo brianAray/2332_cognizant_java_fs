@@ -54,7 +54,7 @@ done
 ### Requirement Steps
 
 1. **Dashboard Layout**:
-    - **Control Panel**: A dropdown to filter by `Status` (All, Active, Maintenance) and a text input for `Sector Name`.
+    - **Control Panel**: A dropdown to filter by `Status` (All, Active, and Maintenance) and a text input for `Sector Name`.
     - **Grid Display**: Use a CSS Grid or Flexbox to show `MeterCards`.
 2. **Component States**:
     - **Active Meter**: Shows all technical details.
