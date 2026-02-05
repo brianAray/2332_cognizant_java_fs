@@ -51,6 +51,15 @@ A municipal power company needs an API to track electricity usage from smart met
 2. **Entity Mapping**: Create the `MeterReading` entity.
 3. **Repository Logic**: Extend `JpaRepository`. Add a method to find by `sectorName` and `status` simultaneously.
 4. **Business Service**: Implement logic to calculate if a reading is considered a "Surge" (where ). *Note: This logic will be consumed by the frontend later.*
+
+```java
+// Surge Logic: Consumed by frontend/API later
+    // Logic: A Surge is defined as usage > 400kWh OR voltage > 450V
+    public boolean isSurge(MeterReading reading) {
+        return reading.getUsageKwh() > 400 || reading.getVoltage() > 450;
+    }
+```
+
 5. **Strict Controller**: For the specific methods not allowed, ensure the handler returns a custom message: `"Method not supported for utility records."`
 6. **Data Validation**:
 * `usageKwh` cannot be negative.
