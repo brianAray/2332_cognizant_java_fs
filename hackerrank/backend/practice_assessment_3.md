@@ -1,71 +1,56 @@
-## Assessment 3: The Fitness Tracker API
+## Assessment 3: The Warehouse Shelf Monitor
 
-**Domain:** Tracking individual workout sessions.
+**Domain:** Monitoring stock levels and shelf capacity across a distribution center.
 
 ### Problem Statement
 
-Design an API for a fitness app that logs exercises.
+A warehouse logistics team needs an API to track real-time stock levels transmitted by smart pallets.
 
-**Example Session JSON:**
+**Example Inventory JSON:**
 
 ```json
 {
-  "id": 1,
-  "userId": 505,
-  "sessionType": "Cardio",
-  "workouts": [
-    {
-      "exerciseType": "Running",
-      "durationMinutes": 45,
-      "caloriesBurned": 400
-    },
-    {
-      "exerciseType": "Elliptical",
-      "durationMinutes": 45,
-      "caloriesBurned": 300
-    }
-  ],
-  "date": "2026-01-28"
+  "id": 101,
+  "shelfLocation": "A-102",
+  "productName": "Wireless Mouse",
+  "category": "Electronics",
+  "stockLevel": 15,
+  "capacity": 100,
+  "lastUpdated": 1672531200000
 }
 
 ```
 
-
 ### API Requirements
 
-1. **POST `/{userId}/workouts`**:
-* Creates a new workout log.
+1. **POST `/inventory**`:
+* Creates a new inventory record.
 * Response: `201 Created`.
 
-2. **GET `/{userId}/workouts`**:
-* Returns all logs for a user.
-* Optional Query Params: `sessionType`.
+
+2. **GET `/inventory**`:
+* Returns all inventory records.
+* Optional Query Params: `productName`.
+* Optional Query Params: `category`.
 * Response: `200 OK`.
 
-3. **GET `/{userId}/workouts/{id}`**:
-* Returns a workout by ID.
+
+3. **GET `/inventory/<id>**`:
+* Returns a specific record by ID.
 * Response: `200 OK` or `404 Not Found`.
 
-4. **PUT/PATCH `/{userId}/workouts/{id}`**
-* Updates a session
-* Response: `200 OK` or `404 Not Found`
 
-5. **DELETE `/{userId}/workouts/{id}`**
-* Deletes a session
-* Response: `200 OK` or `404 Not Found`
+4. **DELETE/PUT/PATCH `/inventory/<id>**`:
+* Response: `405 Method Not Allowed`.
+
 
 
 ### Implementation Steps
 
-1. **Setup**: Set up a Spring Boot project including Spring Web, Spring Data JPA, and a database driver (like H2 or PostgreSQL).
-2. **Model**: 
-  - Create a `WorkoutSession` entity.
-  - Create a `WorkoutItem` (or `Exercise`) entity to represent the nested list.
-  - Establish a One-to-Many relationship between the Session and the Workout items, ensuring `CascadeType.ALL` is used for persistence.
-3. **Repository**:
-  - Define a WorkoutRepository that extends JpaRepository.
-  - Add custom query methods to support filtering by userId, sessionType, and date ranges.
-4. **DTO**: Create a WorkoutSessionRequestDTO and a WorkoutItemDTO to decouple the API contract from the database schema.
-5. **Service**: Implement business logic
-6. **Controller**: implement the endpoints
-7. **Database**: Configure `application.properties` to set up the data source and ensure the schema is generated automatically for testing.
+1. **Setup**: Initialize a Spring Boot project with **Web**, **Spring Data JPA**, and **H2 Database** dependencies.
+2. **Model**: Create an entity with the fields specified above.
+3. **Repository**: Create a repository extending `JpaRepository`. Add custom finders for `productName` and `category`.
+4. **Service**: Implement logic to ensure searches are case-insensitive.
+5. **Controller**: Map the endpoints. Use `@RequestMapping` or specific mapping annotations to explicitly return a `405 Method Not Allowed` for prohibited methods.
+6. **Persistence**: Configure `application.properties` for an in-memory H2 database.
+7. **DTO Pattern**: Map the incoming Request Body to a DTO before converting it to the Entity.

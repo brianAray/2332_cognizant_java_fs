@@ -1,111 +1,78 @@
-## Assessment 3: The Fitness Activity Logger
+## Assessment 3: The Warehouse Dashboard
 
-**Backend Base:** The Fitness Tracker API (POST/GET/PUT/PATCH/DELETE).
-**Frontend Goal:** Build a dynamic dashboard to log workouts and manage a real-time activity list.
+**Backend Base:** The Warehouse Shelf Monitor (Search by Product Name).
+**Frontend Goal:** A dashboard to monitor stock health and shelf distribution.
 
-### Pre Steps
+### Pre-Steps
 
-Before building the frontend, populate your backend database with initial data to ensure your list components have content to render.
+Populate the backend database using the following script.
 
-Create a bash script to execute this:
-
-`seed_workouts.sh`
+`seed_inventory.sh`
 
 ```bash
 #!/bin/bash
 
-BASE_URL="http://localhost:8080"
-DATE_TODAY=$(date +%Y-%m-%d)
-DATE_YESTERDAY=$(date -d "yesterday" +%Y-%m-%d 2>/dev/null || date -v-1d +%Y-%m-%d)
+API_URL="http://localhost:8080/inventory"
 
-echo "Starting workout data seeding to $BASE_URL..."
+echo "Seeding warehouse data to $API_URL..."
 
-# Helper function to post a session
-post_session() {
-  local userId=$1
-  local json_payload=$2
+# Data: ProductName|Category|Shelf|Stock|Capacity
+items=(
+  "Wireless Mouse|Electronics|A-102|15|100"
+  "Mechanical Keyboard|Electronics|A-102|5|50"
+  "Office Chair|Furniture|B-201|45|50"
+  "Desk Lamp|Electronics|A-105|80|100"
+  "USB-C Cable|Electronics|A-102|200|250"
+  "Standing Desk|Furniture|B-205|2|10"
+  "Water Bottle|Lifestyle|C-301|50|50"
+  "Yoga Mat|Fitness|C-305|12|40"
+  "Monitor Stand|Electronics|A-105|3|20"
+  "Coffee Mug|Lifestyle|C-301|25|100"
+)
+
+for item_info in "${items[@]}"; do
+  TIMESTAMP=$(date +%s000) 
+  IFS="|" read -r name cat shelf stock cap <<< "$item_info"
+
+  echo "Seeding $name..."
+
+  curl --location "$API_URL" \
+    --header 'Content-Type: application/json' \
+    --data "{
+        \"productName\": \"$name\",
+        \"category\": \"$cat\",
+        \"shelfLocation\": \"$shelf\",
+        \"stockLevel\": $stock,
+        \"capacity\": $cap,
+        \"lastUpdated\": $TIMESTAMP
+    }"
   
-  echo "Posting session for User $userId..."
-  curl -s -X POST "$BASE_URL/$userId/workouts" \
-    -H "Content-Type: application/json" \
-    -d "$json_payload"
-  echo -e "\n¿? Done.\n"
-}
-
-# --- USER 505 ---
-post_session 505 "{
-  \"sessionType\": \"Cardio\",
-  \"date\": \"$DATE_TODAY\",
-  \"workouts\": [
-    { \"exerciseType\": \"Running\", \"durationMinutes\": 45, \"caloriesBurned\": 400 },
-    { \"exerciseType\": \"Elliptical\", \"durationMinutes\": 15, \"caloriesBurned\": 120 }
-  ]
-}"
-
-# --- USER 102 ---
-post_session 102 "{
-  \"sessionType\": \"Swimming\",
-  \"date\": \"$DATE_YESTERDAY\",
-  \"workouts\": [{ \"exerciseType\": \"Laps\", \"durationMinutes\": 40, \"caloriesBurned\": 500 }]
-}"
-
-post_session 102 "{
-  \"sessionType\": \"Strength\",
-  \"date\": \"$DATE_TODAY\",
-  \"workouts\": [{ \"exerciseType\": \"Weightlifting\", \"durationMinutes\": 60, \"caloriesBurned\": 300 }]
-}"
-
-# --- USER 204 ---
-post_session 204 "{
-  \"sessionType\": \"Flexibility\",
-  \"date\": \"$DATE_TODAY\",
-  \"workouts\": [{ \"exerciseType\": \"Yoga\", \"durationMinutes\": 50, \"caloriesBurned\": 180 }]
-}"
-
-# --- USER 303 ---
-post_session 303 "{
-  \"sessionType\": \"Recovery\",
-  \"date\": \"$DATE_TODAY\",
-  \"workouts\": [{ \"exerciseType\": \"Walking\", \"durationMinutes\": 30, \"caloriesBurned\": 110 }]
-}"
+  echo -e "\n"
+done
 
 echo "Seeding complete!"
 
-
 ```
 
-This will generate 4 users with their own workouts:
-- User Id:
-  - 505
-  - 102
-  - 204
-  - 303
-
-1. **Start your Spring Boot backend** (Ensure the `/workouts` endpoint is active).
-2. **Run** `chmod +x seed_workouts.sh` in your terminal to make the script executable.
-3. **Run** `./seed_workouts.sh` in your terminal.
-4. **Verify** via the browser or Postman (`GET http://localhost:8080/workouts`).
+1. **Start your backend.**
+2. **Execute:** `chmod +x seed_inventory.sh && ./seed_inventory.sh`.
+3. **Verify:** Check `GET http://localhost:8080/inventory`.
 
 ### Requirement Steps
 
-1. **Component Architecture:** 
-    - A `LoginComponent` to enter in the userId and store it as a state variable to be by other components
-    - A `SessionGalleryComponent` to view all the sessions for a user
-    - A `WorkoutListComponent` to view the workouts associated with a session
-    - A `SessionFormComponent` to create a new session for the user or edit a session
-    - A `WorkoutFormComponent` to create a new or update an existing session
-2. **Dynamic Form:**
-  - The `WorkoutFormComponent` should have inputs for `exerciseType` (dropdown or enter in custom type), `durationMinutes` (number), `caloriesBurned` (number). The `userId` (number) is required to be filled through a state variable.
-  - Each workout will be added to the session
-  - Ensure all fields are cleared after a successful submission.
-3. **Conditional Field Logic:** 
-  - Add a conditional label **"High Intensity"** and styling.
-  - Use conditional logic so that it flags an exercise as **"High Intensity"**: `caloriesBurned` >= 200 && `durationMinutes` <= 10
-4. **Data Submission:** 
-  - On clicking "Save", the component should send a `POST` request to the `/workouts` endpoint with the correct `userId`
-  - Handle the response: display a success message if the code is `201 Created` and an unsuccessful message if it is not.
-5. **Local State Update:** - In your `SessionComponent`, view a list of sessions from the backend
-  - When the session is clicked, it will expand the sessions workouts so that they are displayed
-  - Each session will have an edit option that will let you update the workouts individually or remove them from the session
-  - Each session can be deleted as well
-  - Clicking a save button will trigger the request to the backend to handle the local state update
+1. **Component Architecture:**
+    - `InventorySearch`: A search bar with a toggle to switch between "Product Name" and "Category."
+    - `InventoryCard`:
+        - **Full Detail**: Displays Product Name, Category, Shelf, Stock/Capacity ratio, and Last Updated.
+        - **Minimal Detail**: Displays Product Name and Stock Level.
+    - `ShelfOverview`: A container that lists all items within a specific category using the Minimal Detail view.
+2. **Search Logic:**
+    -  If a **Product Name** is searched: Show the specific item in Full Detail. Below it, show all other items in the same **Category** in Minimal Detail.
+    -  If a **Category** is searched: Display all items in that category in Minimal Detail.
+3. **Dynamic Styling:** Create a function that calculates the stock percentage ().
+    - If percentage `< 20%`, apply `low-stock-theme` (Red border/text).
+    - If percentage `100%`, apply `full-stock-theme` (Green background).
+4. **Icon Logic:**
+    - Display a **Warning Triangle** icon if stock is below 20%.
+    - Display a **Box** icon if stock is healthy.
+5. **Error Handling:** If the API returns a `404`, display a notification: "Product/Category not found in warehouse records."
