@@ -1,71 +1,55 @@
-## Assessment 6: The Fitness Tracker API
+## Assessment 6: The Hydroponic Grow-Op API
 
-**Domain:** Tracking individual workout sessions.
+**Domain:** Automating nutrient delivery and environment monitoring for indoor crops.
 
 ### Problem Statement
 
-Design an API for a fitness app that logs exercises.
+A smart farm needs an API to manage "Grow Trays." The system must prevent equipment damage by enforcing safety interlocks between the water sensors and the mechanical pumps.
 
-**Example Session JSON:**
+**Example Grow Tray JSON:**
 
 ```json
 {
-  "id": 1,
-  "userId": 505,
-  "sessionType": "Cardio",
-  "workouts": [
-    {
-      "exerciseType": "Running",
-      "durationMinutes": 45,
-      "caloriesBurned": 400
-    },
-    {
-      "exerciseType": "Elliptical",
-      "durationMinutes": 45,
-      "caloriesBurned": 300
-    }
-  ],
-  "date": "2026-01-28"
+  "id": "TRAY-01",
+  "cropType": "Basil",
+  "phLevel": 6.2,
+  "waterLevelPct": 85,
+  "pumpActive": false,
+  "targetPh": 6.0,
+  "lastNutrientDose": "2026-02-05T10:00:00Z"
 }
 
 ```
 
-
 ### API Requirements
 
-1. **POST `/{userId}/workouts`**:
-* Creates a new workout log.
+1. **POST `/trays`**:
+* Registers a new grow tray.
+* **Constraint:** `phLevel` must be between 0.0 and 14.0 .
 * Response: `201 Created`.
 
-2. **GET `/{userId}/workouts`**:
-* Returns all logs for a user.
-* Optional Query Params: `sessionType`.
-* Response: `200 OK`.
 
-3. **GET `/{userId}/workouts/{id}`**:
-* Returns a workout by ID.
-* Response: `200 OK` or `404 Not Found`.
+2. **GET `/trays`**:
+* Returns all trays.
+* Optional Query Param: `cropType`.
+* Optional Query Param: `alertStatus` (Boolean). If true, return only trays where `phLevel` deviates from `targetPh` by more than 0.5.
 
-4. **PUT/PATCH `/{userId}/workouts/{id}`**
-* Updates a session
-* Response: `200 OK` or `404 Not Found`
 
-5. **DELETE `/{userId}/workouts/{id}`**
-* Deletes a session
-* Response: `200 OK` or `404 Not Found`
+3. **PATCH `/trays/<id>/pump`**:
+* Accepts a JSON body: `{"pumpActive": true/false}`.
+* **The Trick (Safety Interlock):** If the `waterLevelPct` is **below 15%**, the API must refuse to set `pumpActive` to `true` to prevent the pump from running dry and burning out.
+* Response: `200 OK` or `**409 Conflict`** with the message: "Hardware Safety Lock: Insufficient water level to engage pump."
+
+
+4. **DELETE `/trays/<id>`**:
+* Response: `204 No Content`.
+
 
 
 ### Implementation Steps
 
-1. **Setup**: Set up a Spring Boot project including Spring Web, Spring Data JPA, and a database driver (like H2 or PostgreSQL).
-2. **Model**: 
-  - Create a `WorkoutSession` entity.
-  - Create a `WorkoutItem` (or `Exercise`) entity to represent the nested list.
-  - Establish a One-to-Many relationship between the Session and the Workout items, ensuring `CascadeType.ALL` is used for persistence.
-3. **Repository**:
-  - Define a WorkoutRepository that extends JpaRepository.
-  - Add custom query methods to support filtering by userId, sessionType, and date ranges.
-4. **DTO**: Create a WorkoutSessionRequestDTO and a WorkoutItemDTO to decouple the API contract from the database schema.
-5. **Service**: Implement business logic
-6. **Controller**: implement the endpoints
-7. **Database**: Configure `application.properties` to set up the data source and ensure the schema is generated automatically for testing.
+1. **State Validation**: In your Service layer, fetch the current Entity state before applying the PATCH. Use a conditional check to compare the *stored* water level against the *incoming* pump request.
+2. **Custom Response Codes**: Utilize `HttpStatus.CONFLICT` for the safety interlock violation.
+3. **Calculated Logic**: Implement the `alertStatus` filter using a custom JPQL query that calculates the absolute difference: `|phLevel - targetPh| > 0.5`.
+4. **Validation Annotations**: Ensure 0.0 and 14.0 are used for pH levels, and water at 0 or 100 percentages.
+
