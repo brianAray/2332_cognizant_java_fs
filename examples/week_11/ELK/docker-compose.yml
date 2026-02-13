@@ -1,0 +1,93 @@
+# ELK Stack Demo: Log Pipeline
+# This docker-compose sets up a complete ELK stack for log analysis
+
+services:
+  # Elasticsearch: Search & Storage Engine
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false  # Disabled for demo simplicity
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - cluster.name=elk-demo
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    networks:
+      - elk-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:9200/_cluster/health | grep -q '\"status\":\"green\"\\|\"status\":\"yellow\"'"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+
+  # Logstash: Data Processing Pipeline
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.11.0
+    container_name: logstash
+    volumes:
+      - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
+      - ./sample-logs:/usr/share/logstash/sample-logs:ro
+    ports:
+      - "5044:5044"   # Beats input
+      - "5000:5000"   # TCP input (for demo)
+    environment:
+      - "LS_JAVA_OPTS=-Xms256m -Xmx256m"
+    networks:
+      - elk-network
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+
+  # Kibana: Visualization & Dashboards
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.11.0
+    container_name: kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - XPACK_SECURITY_ENABLED=false
+    ports:
+      - "5601:5601"
+    networks:
+      - elk-network
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+
+
+  # Sample App: Generates logs for the dem
+  log-generator:
+    image: alpine:latest
+    container_name: log-generator
+    command: >
+      sh -c "
+        echo 'Waiting for Logstash to start...';
+        sleep 15;
+        while true; do
+          # Generate random log entries using awk for better portability in Alpine
+          LEVEL=$$(awk 'BEGIN {srand(); levels[0]=\"INFO\"; levels[1]=\"WARN\"; levels[2]=\"ERROR\"; levels[3]=\"DEBUG\"; print levels[int(rand()*4)]}');
+          SERVICE=$$(awk 'BEGIN {srand(); services[0]=\"order-service\"; services[1]=\"user-service\"; services[2]=\"payment-service\"; services[3]=\"inventory-service\"; print services[int(rand()*4)]}');
+          DURATION=$$(awk 'BEGIN {srand(); print int(rand()*500 + 10)}');
+          TIMESTAMP=$$(date -u +%Y-%m-%dT%H:%M:%S.000Z);
+          
+          echo \"$$TIMESTAMP [$$LEVEL] [$$SERVICE] Request processed in $${DURATION}ms\" | nc -w 1 logstash 5000 || echo 'Logstash not reachable';
+          
+          sleep 2;
+        done
+      "
+    networks:
+      - elk-network
+    depends_on:
+      - logstash
+
+volumes:
+  elasticsearch-data:
+    driver: local
+
+networks:
+  elk-network:
+    driver: bridge
